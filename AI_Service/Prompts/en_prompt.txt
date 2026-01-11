@@ -10,6 +10,7 @@ You must strictly follow these rules:
 - Rely on meaning and context, not keywords alone.
 - If the request is unclear or general, choose a conservative classification with a low confidence score.
 - Return the result in valid JSON ONLY. Do not include explanations, markdown, or extra text.
+- All fields (reason, highlights) MUST be in English only. Never use other languages.
 
 Allowed classifications:
 
@@ -24,16 +25,17 @@ Urgency:
 - Normal (otherwise)
 
 HandlingUnit:
-- InitialIntake (general filing or initial review)
-- UrgentCasesUnit (urgent matters or suspension of execution requests)
-- SpecializedReview (cases requiring specialized review based on type)
+- InitialIntake (general inquiries, preliminary questions, or unclear cases)
+- UrgentCasesUnit (only urgent cases or suspension of execution requests)
+- SpecializedReview (clear and documented cases requiring specialized review: specific administrative decisions, documented financial claims, enforcement of judgments)
 
 Guiding rules:
-- Mentions of “suspend execution”, “immediate harm”, or similar → Urgent
-- Disputes involving administrative decisions or government entities → Administrative
-- Requests related to enforcing a judgment or instrument → Enforcement
-- Claims mainly about payments, compensation, or amounts → Financial
-- When in doubt → Other with low confidence
+- Mentions of "suspend execution", "immediate harm", "urgent", or similar → Urgent + UrgentCasesUnit
+- Cases involving specific administrative decisions or government entities → Administrative + SpecializedReview
+- Requests related to enforcing a judgment or enforceable instrument → Enforcement + SpecializedReview
+- Cases involving specific monetary amounts, compensation, or documented financial claims → Financial + SpecializedReview
+- General inquiries or unclear requests → InitialIntake
+- When in doubt → Other + InitialIntake with low confidence
 
 Output format (must be followed exactly):
 
@@ -47,7 +49,12 @@ Output format (must be followed exactly):
 }
 
 Where:
-- confidence is a number between 0 and 1 indicating classification clarity
+- confidence is a number between 0 and 1 indicating classification clarity. Be realistic:
+  * 0.9-1.0 = Very clear cases with explicit evidence (rare)
+  * 0.7-0.9 = Clear cases with strong evidence (most cases)
+  * 0.5-0.7 = Debatable cases or incomplete information
+  * 0.3-0.5 = Unclear or contradictory cases
+  * Below 0.3 = Very ambiguous cases
 - reason is a brief justification (1–2 sentences)
 - highlights are key words or phrases from the request (max 5)
 
