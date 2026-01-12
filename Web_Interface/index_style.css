@@ -1,0 +1,60 @@
+
+/* Global variables are declared here */
+:root {
+    --bg-color: #0F172A;
+    --secondary-bg-color: #1E293B;
+    --primary-text-color: #E5E7EB;
+    --secondary-text-color: #9CA3AF;
+    --primary-accent-color: #30a4d6;
+    --secondary-accent-color: #22C55E;
+    --warning-accent-color: #f0a421;
+    --border-color: #334155;
+    /* TODO: Test other fonts
+    --arabic-font:;
+    --english-font:;
+    */
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--primary-text-color);
+    font-family: Arial, Tahoma, sans-serif;
+    margin: 0;
+    padding: 0;
+    direction: rtl;
+    text-align: right;
+}
+
+header, footer {
+    background: var(--secondary-bg-color);
+    padding: 15px;
+}
+
+footer {
+    text-align: center;
+}
+
+main {
+    padding: 20px;
+}
+
+/* This is at the top of the website */
+#main-header {
+    background: linear-gradient(90deg, var(--primary-accent-color), var(--secondary-accent-color));
+    /* Outline text by drawing 2 shadows, 1px down and 1px up */
+    text-shadow: 0px 1px 2px BLACK, 0px -1px 2px BLACK; 
+}
+
+.upload {
+    display: inline-block;
+    padding: 10px 16px;
+    background: var(--primary-accent-color);
+    color: var(--primary-text-color);
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.upload:hover {
+    box-shadow: 0px 0px 10px #22C55E;
+}
