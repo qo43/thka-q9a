@@ -3,7 +3,7 @@ PDF to JPG Converter Module
 
 This module provides functionality to convert PDF files to JPG images.
 Supports multi-page PDFs with configurable quality and resolution.
-Uses PyMuPDF (fitz) - no external dependencies required!
+Uses PyMuPDF (fitz) for PDF processing and image rendering.
 """
 
 import os
