@@ -4,7 +4,7 @@
     --bg-color: #0F172A;
     --secondary-bg-color: #1E293B;
     --primary-text-color: #E5E7EB;
-    --secondary-text-color: #9CA3AF;
+    --secondary-text-color: #676c75;
     --primary-accent-color: #30a4d6;
     --secondary-accent-color: #22C55E;
     --warning-accent-color: #f0a421;
@@ -38,12 +38,76 @@ main {
     padding: 20px;
 }
 
+
 /* This is at the top of the website */
 #main-header {
     background: linear-gradient(90deg, var(--primary-accent-color), var(--secondary-accent-color));
     /* Outline text by drawing 2 shadows, 1px down and 1px up */
-    text-shadow: 0px 1px 2px BLACK, 0px -1px 2px BLACK; 
+    text-shadow: 0px 1px 4px BLACK, 0px -1px 4px BLACK;
+    justify-items: center;
 }
+
+#form-main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#form-div {
+    padding: 15px;
+    background: var(--secondary-bg-color);
+    border-radius: 15px;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    max-width: 300px;
+    padding-bottom: 1rem;
+}
+
+label {
+    font-weight: 600;
+}
+
+input[type="text"] {
+    padding: 0.5rem 0.75rem;
+    font-size: 1rem;
+    color: var(--primary-text-color);
+    background-color: var(--bg-color);
+
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    
+
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+/* Temporary(?) duplicate rule */
+input[type="date"] {
+    padding: 0.5rem 0.75rem;
+    font-size: 1rem;
+    color: var(--secondary-text-color);
+    background-color: var(--primary-text-color);
+
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    
+
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+input:focus {
+    border-color: var(--secondary-accent-color);
+}
+
+#pdf-input {
+    border-radius: 6px;
+}
+
 
 .upload {
     display: inline-block;

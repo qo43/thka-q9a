@@ -9,14 +9,30 @@
 <body>
 
 <header id="main-header">
-    <h1>مؤقت</h1>
+    <h1>المساعد الآلي</h1>
 </header>
 
-<main>
-        <p>الرجاء ادخال صورة أو ملف pdf</p>
-        <!-- accept is NOT safe, validate in the backend -->
-        <input id="pdf-input" type="file" name="file" accept=".pdf,image/*"><br>
-        <button class="upload" id="pdf-upload-btn"> Upload </button>
+<main id="form-main">
+    <div id="form-div">
+        <div class="input-group">
+            <label for="name">الاسم:</label>
+            <input type="text" id="name" name="name" placeholder="اكتب الاسم...">
+        </div>
+        <div class="input-group">
+            <label for="national-id">رقم الهوية:</label>
+            <input type="text" id="national-id" name="national-id" placeholder="اكتب رقم الهوية...">
+        </div>
+        <div class="input-group">
+            <label for="date">تاريخ الشكوى:</label>
+            <input type="date" id="date" name="date" placeholder="اكتب رقم الهوية...">
+        </div>
+        <div class="input-group">
+            <p>الرجاء ادخال صورة أو ملف pdf</p>
+            <!-- accept is NOT safe, validate in the backend -->
+            <input id="pdf-input" type="file" name="file" accept=".pdf,image/*">
+            <button class="upload" id="pdf-upload-btn"> رفع الملف </button>
+        </div>
+    </div>
 </main>
 
 <footer>

@@ -15,3 +15,5 @@ uploadBtn.addEventListener("click", async () => {
         body: formData,
     });
 });
+
+// TODO: Add more event listeners for every input type
