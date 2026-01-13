@@ -1,0 +1,13 @@
+package com.wathiq;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class WathiqApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(WathiqApplication.class, args);
+    }
+
+}
