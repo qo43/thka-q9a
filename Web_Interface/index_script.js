@@ -45,16 +45,16 @@ const checkFormData = () => {
 uploadBtn.addEventListener("click", async () => {
     if(!checkFormData()) return;
     
-    formData.append("name", nameInput.textContent);
-    formData.append("national_id", nationalIdInput.textContent)
-    formData.append("date", date)
-
+    
     const formData = new FormData();
+    // TODO: Readd all this later
+    // formData.append("name", nameInput.textContent);
+    // formData.append("national_id", nationalIdInput.textContent)
+    // formData.append("date", date)
     for(let i = 0; i < pdfInput.files.length; ++i){
         // NOTE: The key is repeated
-        formData.append("files", pdfInput.files[i]);
-    }
-
+        formData.append("file", pdfInput.files[i]);
+    } 
 
     const response = await fetch("http://localhost:8000/api/scan", {
         method: "POST",
@@ -64,4 +64,9 @@ uploadBtn.addEventListener("click", async () => {
     // Gotta check up on your response
     // He could be depressed :(
     if(!response.ok) throw new Error(response.status);
+
+    const data = await response.json();
+    // console.log("DEBUG: \n", data);
+
+    if(!data["isValid"]) mainWarning.textContent = data["reason"];
 });
