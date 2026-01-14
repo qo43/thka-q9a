@@ -1,19 +1,35 @@
+const nameInput       = document.querySelector("#name")
+const nationalIdInput = document.querySelector("#national-id");
+const dateInput       = document.querySelector("#date");
 
-const pdfInput = document.querySelector("#pdf-input");
-const uploadBtn = document.querySelector("#pdf-upload-btn");
+const fileDisplay  = document.querySelector("#chosen-files")
+const pdfInput     = document.querySelector("#pdf-input");
+const uploadBtn    = document.querySelector("#submit");
+const mainWarning  = document.querySelector("#error-text");
 
-// Event listener to upload the pdf file
-// TODO: Add better error handling
+pdfInput.addEventListener("change", (event) => {
+    fileDisplay.textContent = "Selected files: ";
+    for(let i = 0; i < pdfInput.files.length; ++i){
+        fileDisplay.textContent += pdfInput.files[i].name + " ";
+    }
+});
+
+// Event listener to upload user data
 uploadBtn.addEventListener("click", async () => {
-    if(pdfInput.files.length == 0 ) {alert("No file given"); return;}
-    const pdf      = pdfInput.files[0];
+    if(pdfInput.files.length == 0 ) mainWarning.textContent = "No files given";
+    
     const formData = new FormData();
-    formData.append("file", pdf);
+    for(let i = 0; i < pdfInput.files.length; ++i){
+        // NOTE: The key is repeated
+        formData.append("file", pdfInput.files[i]);
+    }
 
-    await fetch("pdf_upload.php", {
+    const response = await fetch("http://localhost:8000/api/scan", {
         method: "POST",
         body: formData,
     });
-});
 
-// TODO: Add more event listeners for every input type
+    // Gotta check up on your response
+    // He could be depressed :(
+    if(!response.ok) throw new Error(response.status);
+});
