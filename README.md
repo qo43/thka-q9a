@@ -8,7 +8,7 @@
 3. Run the server:
     ```bash
     python -m uvicorn main:app --reload
-4. The Backend runs on http://localost:8000
+4. The Backend runs on http://localhost:8000
 
 ## API Endpoints
 - **POST** /api/scan
