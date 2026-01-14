@@ -1,0 +1,153 @@
+
+/* Global variables are declared here */
+:root {
+    --bg-color: #0F172A;
+    --secondary-bg-color: #1E293B;
+    --primary-text-color: #E5E7EB;
+    --secondary-text-color: #676c75;
+    --primary-accent-color: #30a4d6;
+    --secondary-accent-color: #1eb354;
+    --warning-accent-color: #ff1818;
+    --border-color: #334155;
+    /* TODO: Test other fonts
+    --arabic-font:;
+    --english-font:;
+    */
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--primary-text-color);
+    font-family: Arial, Tahoma, sans-serif;
+    margin: 0;
+    padding: 0;
+    direction: rtl;
+    text-align: right;
+}
+
+header, footer {
+    background: var(--secondary-bg-color);
+    padding: 15px;
+}
+
+footer {
+    text-align: center;
+}
+
+main {
+    padding: 20px;
+}
+
+
+/* This is at the top of the website */
+#main-header {
+    background: linear-gradient(90deg, var(--primary-accent-color), var(--secondary-accent-color));
+    /* Outline text by drawing 2 shadows, 1px down and 1px up */
+    text-shadow: 0px 1px 4px BLACK, 0px -1px 4px BLACK;
+    justify-items: center;
+}
+
+#form-main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#form-div {
+    padding: 15px;
+    background: var(--secondary-bg-color);
+    border-radius: 15px;
+}
+
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    max-width: 300px;
+    padding-bottom: 1rem;
+}
+
+label {
+    font-weight: 600;
+}
+
+input[type="text"] {
+    padding: 0.5rem 0.75rem;
+    font-size: 1rem;
+    color: var(--primary-text-color);
+    background-color: var(--bg-color);
+
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    
+
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+input[type="date"] {
+    padding: 0.5rem 0.75rem;
+    font-size: 1rem;
+    color: var(--primary-text-color);
+    background-color: var(--bg-color);
+
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    
+
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+input:focus {
+    border-color: var(--secondary-accent-color);
+}
+
+#pdf-input {
+    display: none;
+    border-radius: 6px;
+    cursor: pointer;
+    padding: 10px;
+}
+
+#chosen-files {
+    text-align: center;
+    font-weight: 600;
+    color: var(--secondary-text-color);
+}
+
+.file-upload-btn {
+    display: inline-block;
+    background: var(--secondary-accent-color);
+    border: 3px solid var(--bg-color);
+    border-radius: 3px;
+    cursor: pointer;
+    text-align: center;
+   
+}
+
+.file-upload-btn:hover {
+     box-shadow: 0px 0px 10px var(--secondary-accent-color);
+}
+
+
+.upload {
+    display: inline-block;
+    padding: 10px 16px;
+    background: var(--primary-accent-color);
+    color: var(--primary-text-color);
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.upload:hover {
+    box-shadow: 0px 0px 10px var(--primary-accent-color);
+}
+
+.error {
+    text-align: left; /*temp*/
+    color: var(--warning-accent-color);
+    font-weight: 600;
+}
