@@ -1,9 +1,14 @@
 from fastapi import FastAPI, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from pathlib import Path
 import cv2
 import numpy as np
 import easyocr
 import re
+import os
+import time
+import pdf_converter
 
 # --- FASTAPI SETUP ---
 app = FastAPI(
@@ -12,12 +17,25 @@ app = FastAPI(
     version="1.0.0"
 )
 
+# --- UPLOAD DIRECTORY SETUP ---
+UPLOAD_DIR = "accepted_documents"
+os.makedirs(UPLOAD_DIR, exist_ok=True)
+
 # Enables CORS for Frontend Communication
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
     allow_methods=["*"],
     allow_headers=["*"],
+)
+
+# --- FRONT END CONNECTION ---
+# This connects the Python backend to the frontend
+BASE_DIR = Path(__file__).resolve().parent
+app.mount(
+    "/Web_Interface",
+    StaticFiles(directory=BASE_DIR / "Web_Interface", html=True),
+    name="Web_Interface"
 )
 
 # --- LOAD EASYOCR MODEL ---
@@ -36,6 +54,26 @@ def normalize_arabic_numbers(text):
     translation_table = str.maketrans("٠١٢٣٤٥٦٧٨٩", "0123456789")
     return text.translate(translation_table)
 
+def save_for_database(file_bytes, original_filename):
+    """
+    Saves the approved file to the UPLOAD_DIR with a unique name (timestamp + original name).
+    Returns the path where the file is saved.
+    """
+    try:
+        # Example: 1701301234_originalfilename.pdf
+        timestamp = int(time.time())
+        clean_name = os.path.basename(original_filename)
+        unique_name = f"{timestamp}_{clean_name}"
+        save_path = os.path.join(UPLOAD_DIR, unique_name)
+        with open(save_path, "wb") as f:
+            f.write(file_bytes)
+
+        print(f"Saved approved document to: {save_path}")
+        return save_path
+    except Exception as e:
+        print(f"Error saving file: {e}")
+        return None
+
 @app.post("/api/scan")
 async def scan_document(file: UploadFile = File(...)):
     """
@@ -47,27 +85,70 @@ async def scan_document(file: UploadFile = File(...)):
     5. Year Extraction
     """
 
-    #1. READ IMAGE INTO MEMORY
+    # 0. READ IMAGE INTO MEMORY
     # Using in-memroy bytes to avoid file I/O
-    img_bytes = await file.read()
+    file_bytes = await file.read()
+    # Fetch PDF file info using pdf_processor module
+    file_Info = pdf_converter.get_pdf_info(file_bytes)
+    filename = file.filename.lower()
+    img = None
 
     try:
+        # 1. CHECK FOR EMPTY FILE
+        if file_Info['file_size_bytes'] == 0:
+            return {"isValid": False, "reason": "الملف المرفق فارغ."}
+        
         # 2. IMAGE DECODING
         # Converts raw bytes to OpenCV image object
-        nparr = np.frombuffer(img_bytes, np.uint8)
-        img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+        if filename.endswith('.pdf'):
+            # Is it a PDF file? check page count
+            # If the PDF has more than 10 pages then reject it
+            if file_Info and file_Info['page_count'] > 10:
+                return {"isValid": False, "reason": "الملف يحتوي على أكثر من 10 صفحات. يرجى رفع ملف أصغر."}
+            
+            if file_Info and file_Info['is_encrypted']:
+                return {"isValid": False, "reason": "الملف محمي بكلمة مرور ولا يمكن معالجته."}
+
+            # Convert PDF bytes to image using pdf_processor function
+            img, error = pdf_converter.convert_pdf_bytes_to_image(file_bytes)
+            if img is None:
+                return {"isValid": False, "reason": error}
+        else:
+            # Assume it's an image file (JPG/PNG) and decode directly
+            # Check the image header to ensure it is a valid image
+            # JPG header: FF D8. PNG header: 89 50.
+            header = file_bytes[:4].hex().upper()
+            is_valid_image = header.startswith('FFD8') or header.startswith('8950')
+            
+            nparr = np.frombuffer(file_bytes, np.uint8)
+            img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+
+            if img is None:
+                if not is_valid_image:
+                    return {"isValid": False, "reason": "الملف لا يبدو كصورة صالحة هل قمت بتغيير امتداد الملف؟ الملفات المدعومة: الصور وملفات PDF."}
+                else:
+                    return {"isValid": False, "reason": "تعذر قراءة الصورة. تأكد من أن الملف غير تالف."}
+            
+        # 2.5 QUALITY ENHANCEMENT
+        # Convert to grayscale
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+        # Binary Thresholding (Make text black and background white)
+        # We use Otsu's method (0 + THRESH_OTSU) which ignores the first number 
+        # and automatically calculates the perfect threshold for this specific paper.
+        _, img = cv2.threshold(img, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
 
         # 3. OCR PROCESSING
         # detail=1: returns returns bounding box, text, and confidence score
         # We need confidence scores for validation
         # Note: paragraph=False to get word-level scores instead of paragraph-level
-        # mag_ratio=2: for better accuracy on small text it increases image size before processing
+        # mag_ratio=1: for better accuracy on small text it increases image size before processing
         # link_threshold=0.1: to help with connected text in Arabic documents
         raw_results = reader.readtext(
             img, 
             detail=1,
             paragraph=False,
-            mag_ratio=2,
+            mag_ratio=1,
             link_threshold=0.1
         )
         
@@ -107,6 +188,7 @@ async def scan_document(file: UploadFile = File(...)):
 
         # 7. FINAL DECISION LOGIC
         reason = ""
+        saved_path = None
         
         # Gate 1: Confidence Check
         # If the AI confidence is too low, we reject the document
@@ -122,13 +204,21 @@ async def scan_document(file: UploadFile = File(...)):
         # Gate 3: Success
         else:
             reason = f"تم التحقق بنجاح. مستند لعام {detected_year}."
+            # Save approved document for database storage only if valid
+            saved_path = save_for_database(file_bytes, filename)
 
+            # We use this logic to create a preview image thumbnail for frontend display
+            if saved_path and filename.endswith('.pdf'):
+                thumb_path = pdf_converter.create_thumbnail(saved_path, UPLOAD_DIR)
+                print(f"Thumbnail created at: {thumb_path}")
+                    
         return {
             "text": extracted_text,
             "isValid": is_valid,
             "caseYear": detected_year,
             "reason": reason,
-            "debugScore": avg_confidence
+            "debugScore": avg_confidence,
+            "databasePath": saved_path
         }
 
     except Exception as e:

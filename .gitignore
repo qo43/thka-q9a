@@ -4,3 +4,4 @@ venv/
 *.pyc
 temp_*
 img/
+accepted_documents/
