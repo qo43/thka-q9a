@@ -2,6 +2,8 @@ from fastapi import FastAPI, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pathlib import Path
+from fastapi.staticfiles import StaticFiles
+from pathlib import Path
 import cv2
 import numpy as np
 import easyocr
@@ -29,13 +31,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# --- FRONT END CONNECTION ---
-# This connects the Python backend to the frontend
+# Mount the website to allow calling the API
+# BASE_DIR, because you need to use an absolute path when mounting
 BASE_DIR = Path(__file__).resolve().parent
 app.mount(
-    "/Web_Interface",
-    StaticFiles(directory=BASE_DIR / "Web_Interface", html=True),
-    name="Web_Interface"
+    "/Web_Interface/",
+    StaticFiles(directory= BASE_DIR / "Web_Interface", html=True)
 )
 
 # --- LOAD EASYOCR MODEL ---
