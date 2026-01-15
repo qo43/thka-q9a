@@ -89,20 +89,27 @@ async def scan_document(file: UploadFile = File(...)):
     # 0. READ IMAGE INTO MEMORY
     # Using in-memroy bytes to avoid file I/O
     file_bytes = await file.read()
-    # Fetch PDF file info using pdf_processor module
-    file_Info = pdf_converter.get_pdf_info(file_bytes)
     filename = file.filename.lower()
     img = None
+    file_Info = None
 
     try:
+
+
         # 1. CHECK FOR EMPTY FILE
-        if file_Info['file_size_bytes'] == 0:
+        if len(file_bytes) == 0:
             return {"isValid": False, "reason": "الملف المرفق فارغ."}
         
         # 2. IMAGE DECODING
         # Converts raw bytes to OpenCV image object
+        # First check if it's a PDF
         if filename.endswith('.pdf'):
-            # Is it a PDF file? check page count
+            # Fetch PDF file info using pdf_processor module
+            file_Info = pdf_converter.get_pdf_info(file_bytes)
+
+            if file_Info is None:
+                return {"isValid": False, "reason": "ملف PDF تالف أو غير صالح."}
+
             # If the PDF has more than 10 pages then reject it
             if file_Info and file_Info['page_count'] > 10:
                 return {"isValid": False, "reason": "الملف يحتوي على أكثر من 10 صفحات. يرجى رفع ملف أصغر."}
