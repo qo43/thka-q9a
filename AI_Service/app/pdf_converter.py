@@ -12,6 +12,62 @@ from typing import List, Optional, Union
 
 import fitz   # type: ignore
 
+# Maz added imports for in-memory PDF to image conversion
+import numpy as np
+import cv2
+
+# Maz added this function to help main.py do direct conversion from PDF bytes to JPG numpy array
+def convert_pdf_bytes_to_image(file_bytes) -> np.ndarray:
+    """
+    Converts a PDF (in bytes) directly to an OpenCV image in-memory.
+    Returns: (image_object, error_message)
+    """
+
+    # 1. Check for empty file
+    if len(file_bytes) == 0:
+        return None, "الملف فارغ."
+    
+    # 2. Basic PDF signature check
+    if not file_bytes.startswith(b'%PDF'):
+        return None, "الملف ليس بتنسيق PDF صالح."
+
+    try:
+        # Open PDF from RAM
+        with fitz.open(stream=file_bytes, filetype="pdf") as doc:
+            if doc.page_count == 0:
+                return None, "ملف PDF فارغ."
+
+            # Get the first page
+            page = doc[0]
+
+            # Zoom to 150 DPI (approx 2.08x) for better OCR
+            zoom = 150 / 72
+            matrix = fitz.Matrix(zoom, zoom)
+            pix = page.get_pixmap(matrix=matrix)
+            
+            # Convert PyMuPDF Pixmap -> Numpy Array (OpenCV format)
+            # 1. Get pixels as a long string of bytes
+            img_data = np.frombuffer(pix.samples, dtype=np.uint8)
+            
+            # 2. Reshape into (Height, Width, Channels)
+            img_data = img_data.reshape(pix.h, pix.w, pix.n)
+            
+            # 3. Convert Color Space (RGB -> BGR for OpenCV)
+            if pix.n >= 3:
+                img = cv2.cvtColor(img_data, cv2.COLOR_RGB2BGR)
+            else:
+                img = cv2.cvtColor(img_data, cv2.COLOR_GRAY2BGR)
+                
+            return img, None
+
+    except Exception as e:
+        error_msg = str(e)
+        if "cannot open broken document" in error_msg.lower():
+            return None, "الملف PDF تالف أو غير صالح."
+        elif "password" in error_msg.lower():
+            return None, "الملف PDF محمي بكلمة مرور."
+        else:
+            return None, f"حدث خطأ غير معروف أثناء معالجة ملف PDF: {error_msg}"
 
 def convert_pdf_to_jpg(
     pdf_path: Union[str, Path],
@@ -166,7 +222,7 @@ def convert_pdf_batch(
     return results
 
 
-def get_pdf_info(pdf_path: Union[str, Path]) -> dict:
+def get_pdf_info(pdf_path: Union[str, Path, bytes]) -> dict:
     """
     Get information about a PDF file.
     
@@ -176,25 +232,63 @@ def get_pdf_info(pdf_path: Union[str, Path]) -> dict:
     Returns:
         Dictionary containing PDF information (page count, file size, etc.)
     """
-    pdf_path = Path(pdf_path)
+
+    pdf_document = None
+    file_size_bytes = 0
+    filename = "unkown"
+    path_str = "memory"
     
-    if not pdf_path.exists():
-        raise FileNotFoundError(f"PDF file not found: {pdf_path}")
+    # if not pdf_path.exists(): ------> Removed this check to allow in-memory bytes input
+    #     raise FileNotFoundError(f"PDF file not found: {pdf_path}")
     
     try:
-        pdf_document = fitz.open(str(pdf_path))
-        page_count = pdf_document.page_count
+        # Case 1: Input is raw bytes (From RAM)
+        if isinstance(pdf_path, (bytes, bytearray)):
+            # If input is bytes open from stream
+            pdf_document = fitz.open(stream=pdf_path, filetype="pdf")
+            file_size_bytes = len(pdf_path)
+            filename = "uploaded_file.pdf"
+        else:
+            # Case 2: Input is file path (From Disk)
+            pdf_path = Path(pdf_path)
+            if not pdf_path.exists():
+                raise FileNotFoundError(f"PDF file not found: {pdf_path}")
+            
+            pdf_document = fitz.open(str(pdf_path))
+            file_size_bytes = pdf_path.stat().st_size
+            filename = pdf_path.name
+            path_str = str(pdf_path)
+
+        info = {
+            "filename": filename,
+            "path": path_str,
+            "page_count": pdf_document.page_count,
+            "file_size_bytes": file_size_bytes,
+            "file_size_mb": round(file_size_bytes / (1024 * 1024)),
+            "is_encrypted": pdf_document.is_encrypted
+        }
         pdf_document.close()
+        return info
     except Exception as e:
         raise ValueError(f"Failed to read PDF: {str(e)}")
     
-    file_size_bytes = pdf_path.stat().st_size
-    file_size_mb = file_size_bytes / (1024 * 1024)
     
-    return {
-        "filename": pdf_path.name,
-        "path": str(pdf_path),
-        "page_count": page_count,
-        "file_size_bytes": file_size_bytes,
-        "file_size_mb": round(file_size_mb, 2),
-    }
+
+# Maz added function to create thumbnail of first page
+def create_thumbnail(pdf_path, output_folder):
+    """
+    Create a thumbnail image (JPG) of the first page of the PDF.
+    """
+    try:
+        doc = fitz.open(str(pdf_path))
+        page = doc[0]
+        pix = page.get_pixmap(matrix=fitz.Matrix(.5, .5)) # Scale down making it low res thumbnail for faster loading
+
+        thumb_name = os.path.basename(pdf_path).replace('.pdf', '_thumb.jpg')
+        thumb_path = os.path.join(output_folder, thumb_name)
+        pix.save(thumb_path)
+
+        return thumb_path
+    except Exception as e:
+        print(f"Error creating thumbnail for {pdf_path}: {e}")
+        return None
