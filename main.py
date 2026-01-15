@@ -10,7 +10,7 @@ import easyocr
 import re
 import os
 import time
-import pdf_converter
+from AI_Service.app import pdf_converter
 
 # --- FASTAPI SETUP ---
 app = FastAPI(
