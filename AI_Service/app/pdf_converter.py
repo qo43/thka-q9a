@@ -235,7 +235,7 @@ def get_pdf_info(pdf_path: Union[str, Path, bytes]) -> dict:
 
     pdf_document = None
     file_size_bytes = 0
-    filename = "unkown"
+    filename = "unknown"
     path_str = "memory"
     
     # if not pdf_path.exists(): ------> Removed this check to allow in-memory bytes input
