@@ -125,7 +125,6 @@ input:focus {
     border-radius: 3px;
     cursor: pointer;
     text-align: center;
-   
 }
 
 .file-upload-btn:hover {
@@ -135,7 +134,7 @@ input:focus {
 
 .upload {
     display: inline-block;
-    padding: 10px 16px;
+    padding: 10px 30px;
     background: var(--primary-accent-color);
     color: var(--primary-text-color);
     border-radius: 6px;
@@ -147,8 +146,36 @@ input:focus {
     box-shadow: 0px 0px 10px var(--primary-accent-color);
 }
 
-.error {
-    text-align: left; /*temp*/
-    color: var(--warning-accent-color);
+.status {
     font-weight: 600;
+}
+
+.error {
+    color: var(--warning-accent-color);
+}
+
+.success {
+    color: var(--secondary-accent-color);
+}
+
+.loading-container {
+    display: flex;
+    padding-top: 30px;
+    justify-content: center;
+    align-items: center;
+}
+
+.loading {
+    width: 50px;
+    height: 50px;
+    border: 10px solid var(--primary-text-color);
+    border-top: 10px solid var(--secondary-accent-color);
+    border-radius: 50%;
+    animation: load-animation 0.5s ease-in-out infinite;
+}
+
+@keyframes load-animation {
+  to { 
+        transform: rotate(360deg);
+    }
 }
