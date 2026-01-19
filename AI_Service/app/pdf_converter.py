@@ -270,7 +270,8 @@ def get_pdf_info(pdf_path: Union[str, Path, bytes]) -> dict:
         pdf_document.close()
         return info
     except Exception as e:
-        raise ValueError(f"Failed to read PDF: {str(e)}")
+        print(f"Corrupted PDF detected. Reason: {e}")
+        return None
     
     
 
