@@ -8,11 +8,13 @@ import cv2
 import numpy as np
 import easyocr
 import fitz
+from pydantic import BaseModel
 import torch
 import re
 import os
 import time
 from AI_Service.app import pdf_converter
+from AI_Service.app import explaination_generation
 
 torch.set_num_threads(4)  # Limit PyTorch to use only 4 CPU threads to prevent bottelenecks
 # --- FASTAPI SETUP ---
@@ -77,6 +79,38 @@ def save_for_database(file_bytes, original_filename):
     except Exception as e:
         print(f"Error saving file: {e}")
         return None
+
+# --- DATA MODELS ---
+class DraftRequest(BaseModel):
+    """.
+    Validates that the frontend sends a valid JSON object containing 'ocr_text'.
+    This prevents the server from crashing if bad data is sent.
+    """
+    ocr_text: str
+
+# --- AI GENERATION ENDPOINT ---
+@app.post("/api/draft")
+async def draft_explaination(request: DraftRequest):
+    """
+    Endpoint to provide explanation for draft documents.
+    Frontend should call this after /api/scan returns success.
+    """
+    # A safe text limit to avoid crashing the AI with huge inputs
+    safe_text = request.ocr_text[:2000]
+
+    try:
+        result = explaination_generation.generate_explanation(safe_text)
+    except Exception as e:
+        print(f"AI Generator Crashed: {e}")
+        return {"draft": "حدث خطأ أثناء توليد الشرح.", "status": "error", "reason": "System Error"}
+    
+    response_payload = {
+        "draft": result.get("message", ""),
+        "status": "success" if result.get("success") else "error",
+        "reason": result.get("reason", "")
+    }
+    
+    return response_payload
 
 @app.post("/api/scan")
 async def scan_document(file: UploadFile = File(...)):
@@ -182,13 +216,6 @@ async def scan_document(file: UploadFile = File(...)):
         img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         print("Image converted to grayscale.")
 
-        # Binary Thresholding (Make text black and background white)
-        # We use Otsu's method (0 + THRESH_OTSU) which ignores the first number 
-        # and automatically calculates the perfect threshold for this specific paper.
-        print("Applying binary thresholding...")
-        _, img = cv2.threshold(img, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-        print("Binary thresholding applied.")
-
         # 3. OCR PROCESSING
         # detail=1: returns returns bounding box, text, and confidence score
         # We need confidence scores for validation
@@ -202,7 +229,9 @@ async def scan_document(file: UploadFile = File(...)):
             detail=1,
             paragraph=False,
             mag_ratio=1,
-            link_threshold=0.1
+            link_threshold=0.1,
+            decoder='greedy',
+            beamWidth=1
         )
         end_ocr = time.time()
         print(f"OCR processing completed in {end_ocr - start_ocr:.2f} seconds.")
