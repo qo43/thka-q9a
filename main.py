@@ -7,11 +7,14 @@ from pathlib import Path
 import cv2
 import numpy as np
 import easyocr
+import fitz
+import torch
 import re
 import os
 import time
 from AI_Service.app import pdf_converter
 
+torch.set_num_threads(4)  # Limit PyTorch to use only 4 CPU threads to prevent bottelenecks
 # --- FASTAPI SETUP ---
 app = FastAPI(
     title="Wathiq OCR API",
@@ -28,7 +31,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
     allow_methods=["*"],
-    allow_headers=["*"],
+    allow_headers=["*"]
 )
 
 # Mount the website to allow calling the API
@@ -94,18 +97,43 @@ async def scan_document(file: UploadFile = File(...)):
     file_Info = None
 
     try:
-
-
         # 1. CHECK FOR EMPTY FILE
         if len(file_bytes) == 0:
             return {"isValid": False, "reason": "الملف المرفق فارغ."}
-        
-        # 2. IMAGE DECODING
-        # Converts raw bytes to OpenCV image object
-        # First check if it's a PDF
+
+        # 2. PDF/IMAGE DECODING
+        # Converts raw bytes to OpenCV image object and handles PDF conversion if needed
+        # First check if the file is a PDF
         if filename.endswith('.pdf'):
+            # Try reading PDF directly with fitz (PyMuPDF) for text extraction
+            try:
+                print("Reading PDF with fitz...")
+                with fitz.open(stream=file_bytes, filetype="pdf") as doc:
+                    text_content = ""
+                    for page in doc:
+                        text_content += page.get_text()
+                    print("PDF text extraction with fitz completed.")
+
+                    if len(text_content) > 50:
+                        detected_year = "Unknown"
+                        year_match = re.search(r'(?:14|١٤)[0-9٠-٩]{2}', text_content)
+                        if year_match:
+                            detected_year = normalize_arabic_numbers(year_match.group(0))
+                        return {
+                            "text": text_content,
+                            "isValid": True, 
+                            "caseYear": detected_year,
+                            "reason": "تم استخراج النص مباشرة.",
+                            "debugScore": 1.0
+                        }
+            except Exception as e:
+                print(f"Error reading PDF with fitz will fall back to OCR: {e}")
+
+            # If fitz extraction fails fall back to image conversion
             # Fetch PDF file info using pdf_processor module
+            print("Getting PDF info...")
             file_Info = pdf_converter.get_pdf_info(file_bytes)
+            print(f"PDF Info: {file_Info}")
 
             if file_Info is None:
                 return {"isValid": False, "reason": "ملف PDF تالف أو غير صالح."}
@@ -118,7 +146,9 @@ async def scan_document(file: UploadFile = File(...)):
                 return {"isValid": False, "reason": "الملف محمي بكلمة مرور ولا يمكن معالجته."}
 
             # Convert PDF bytes to image using pdf_processor function
+            print("Converting PDF to image for OCR...")
             img, error = pdf_converter.convert_pdf_bytes_to_image(file_bytes)
+            print("PDF to image conversion completed.")
             if img is None:
                 return {"isValid": False, "reason": error}
         else:
@@ -137,14 +167,27 @@ async def scan_document(file: UploadFile = File(...)):
                 else:
                     return {"isValid": False, "reason": "تعذر قراءة الصورة. تأكد من أن الملف غير تالف."}
             
-        # 2.5 QUALITY ENHANCEMENT
+        # 2.5 PROCESSING ENHANCEMENTS
+        height, width = img.shape[:2]
+
+        # Resize large images for faster processing
+        MAX_WIDTH = 1280
+        if width > MAX_WIDTH:
+            scaling_factor = MAX_WIDTH / float(width)
+            new_height = int(height * scaling_factor)
+            img = cv2.resize(img, (MAX_WIDTH, new_height), interpolation=cv2.INTER_AREA)
+
         # Convert to grayscale
+        print("Converting image to grayscale...")
         img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        print("Image converted to grayscale.")
 
         # Binary Thresholding (Make text black and background white)
         # We use Otsu's method (0 + THRESH_OTSU) which ignores the first number 
         # and automatically calculates the perfect threshold for this specific paper.
+        print("Applying binary thresholding...")
         _, img = cv2.threshold(img, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+        print("Binary thresholding applied.")
 
         # 3. OCR PROCESSING
         # detail=1: returns returns bounding box, text, and confidence score
@@ -152,6 +195,8 @@ async def scan_document(file: UploadFile = File(...)):
         # Note: paragraph=False to get word-level scores instead of paragraph-level
         # mag_ratio=1: for better accuracy on small text it increases image size before processing
         # link_threshold=0.1: to help with connected text in Arabic documents
+        print("Starting OCR processing with EasyOCR...")
+        start_ocr = time.time()
         raw_results = reader.readtext(
             img, 
             detail=1,
@@ -159,21 +204,25 @@ async def scan_document(file: UploadFile = File(...)):
             mag_ratio=1,
             link_threshold=0.1
         )
+        end_ocr = time.time()
+        print(f"OCR processing completed in {end_ocr - start_ocr:.2f} seconds.")
         
         # 4. CALCULATE CONFIDENCE
         total_confidence = 0
         word_count = 0
         extracted_text_list = []
 
+        print("Starting OCR result processing...")
         for (bbox, text, prob) in raw_results:
             extracted_text_list.append(text)
             total_confidence += prob
             word_count += 1
-        
+        print("OCR result processing completed.")
+
         # Determine average confidence score
         avg_confidence = (total_confidence / word_count) if word_count > 0 else 0
         
-        print(f"DEBUG: Average AI Confidence: {avg_confidence:.2f}") # e.g., 0.85
+        print(f"Average OCR Confidence: {avg_confidence:.2f}") # For example 0.85
 
         # Reassemble full extracted text
         extracted_text = " ".join(extracted_text_list)
@@ -193,6 +242,7 @@ async def scan_document(file: UploadFile = File(...)):
         if year_match:
             raw_year = year_match.group(0)
             detected_year = normalize_arabic_numbers(raw_year)
+        # Add unknown year handling if needed
 
         # 7. FINAL DECISION LOGIC
         reason = ""
