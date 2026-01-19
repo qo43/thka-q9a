@@ -23,10 +23,6 @@
             <input type="text" id="national-id" name="national-id" placeholder="اكتب رقم الهوية..." required>
         </div>
         <div class="input-group">
-            <label for="date">تاريخ الشكوى:</label>
-            <input type="date" id="date" name="date" placeholder="اكتب رقم الهوية..." required>
-        </div>
-        <div class="input-group">
             <p>الرجاء ادخال صورة أو ملف pdf</p>
             <!-- accept is NOT safe, validate in the backend -->
             <label class="file-upload-btn">
@@ -36,8 +32,12 @@
             <p id="chosen-files"></p>
         </div>
         <button class="upload" id="submit"> رفع الملف </button>
-        <div class="error">
-            <p id="error-text"></p>
+        <div class="loading-container">
+            <div class="loading" hidden></div>
+        </div>
+        
+        <div class="status error">
+            <p id="status-text"></p>
         </div>
     </div>
 </main>
