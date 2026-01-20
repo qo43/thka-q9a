@@ -2,49 +2,73 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>Judicial Helper</title>
+    <title>المساعد القضائي الآلي</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" href="index_style.css">
 </head>
 <body>
 
-<header id="main-header">
-    <h1>المساعد الآلي</h1>
-</header>
+<div class="app-container">
+    <header id="main-header">
+        <div class="logo-area">
+            <h1>⚖️ المساعد الآلي</h1>
+            <p class="subtitle">نظام رفع وتدقيق الملفات القضائية</p>
+        </div>
+    </header>
 
-<main id="form-main">
-    <div id="form-div">
-        <div class="input-group">
-            <label for="name">الاسم:</label>
-            <input type="text" id="name" name="name" placeholder="اكتب الاسم..." required>
-        </div>
-        <div class="input-group">
-            <label for="national-id">رقم الهوية:</label>
-            <input type="text" id="national-id" name="national-id" placeholder="اكتب رقم الهوية..." required>
-        </div>
-        <div class="input-group">
-            <p>الرجاء ادخال صورة أو ملف pdf</p>
-            <!-- accept is NOT safe, validate in the backend -->
-            <label class="file-upload-btn">
-                <input id="pdf-input" type="file" name="file" accept=".pdf,image/*" multiple required>
-                Choose file
-            </label>
-            <p id="chosen-files"></p>
-        </div>
-        <button class="upload" id="submit"> رفع الملف </button>
-        <div class="loading-container">
-            <div class="loading" hidden></div>
-        </div>
-        
-        <div class="status error">
-            <p id="status-text"></p>
-        </div>
-    </div>
-</main>
+    <main>
+        <div class="card">
+            <div class="input-group">
+                <label for="name">الاسم الثلاثي</label>
+                <input type="text" id="name" placeholder="أدخل الاسم..." autocomplete="name">
+            </div>
 
-<footer>
-    <p dir="ltr">© 2026 All Rights Reserved</p>
-</footer>
+            <div class="input-group">
+                <label for="national-id">رقم الهوية</label>
+                <input type="text" id="national-id" placeholder="10xxxxxxxx" pattern="[0-9]*">
+            </div>
+
+            <div class="input-group">
+                <label for="date">التاريخ</label>
+                <input type="date" id="date">
+            </div>
+
+            <div class="file-upload-wrapper">
+                <label class="file-upload-zone" for="pdf-input">
+                    <div class="upload-content">
+                        <span class="icon">📂</span>
+                        <span class="text">اضغط هنا لاختيار الملفات</span>
+                        <span class="sub-text">PDF, Images</span>
+                    </div>
+                </label>
+                <input id="pdf-input" type="file" accept=".pdf,image/*" multiple>
+                
+                <p id="chosen-files" class="file-list"></p>
+            </div>
+
+            <button class="btn-primary" id="submit">
+                رفع البيانات
+            </button>
+
+            <div class="loading-container">
+                <div class="loading" hidden></div>
+            </div>
+            
+            <div class="status">
+                <p id="status-text"></p>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p dir="ltr">© 2026 Judicial Helper System</p>
+    </footer>
+</div>
 
 <script src="index_script.js"></script>
 </body>
