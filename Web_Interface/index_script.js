@@ -9,17 +9,17 @@ const mainStatusDiv = document.querySelector(".status");
 const mainStatus    = document.querySelector("#status-text");
 const loading       = document.querySelector(".loading");
 
-$(function () {
-    $("#date").hijriDatePicker({
-        hijri: true,
-        format: 'iYYYY-iMM-iDD',
-        showTodayButton: true,
-        showClear: true,
-        showClose: true,
-        allowInputToggle: true,
-        locale: 'ar-sa'
-    });
-});
+// $(function () {
+//     $("#date").hijriDatePicker({
+//         hijri: true,
+//         format: 'iYYYY-iMM-iDD',
+//         showTodayButton: true,
+//         showClear: true,
+//         showClose: true,
+//         allowInputToggle: true,
+//         locale: 'ar-sa'
+//     });
+// });
 
 pdfInput.addEventListener("change", (event) => {
     fileDisplay.textContent = "Selected files: ";

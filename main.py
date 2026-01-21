@@ -2,8 +2,6 @@ from fastapi import FastAPI, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pathlib import Path
-from fastapi.staticfiles import StaticFiles
-from pathlib import Path
 import cv2
 import numpy as np
 import easyocr
