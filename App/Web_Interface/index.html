@@ -42,7 +42,7 @@
 
             <div class="input-group">
                 <label for="national-id">رقم الهوية</label>
-                <input type="text" id="national-id" placeholder="10xxxxxxxx" pattern="[0-9]*">
+                <input type="text" id="national-id" inputmode="numeric" placeholder="10xxxxxxxx" pattern="[0-9]*">
             </div>
 
             <div class="input-group">
@@ -62,6 +62,7 @@
                 
                 <p id="chosen-files" class="file-list"></p>
             </div>
+            <img id="preview-image">
 
             <button class="btn-primary" id="submit">
                 رفع البيانات
@@ -74,6 +75,9 @@
             <div class="status">
                 <p id="status-text"></p>
             </div>
+            <button class="btn-primary" id="next" hidden>
+                تقدم
+            </button>
         </div>
     </main>
 

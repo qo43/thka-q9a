@@ -171,8 +171,12 @@ body {
     direction: ltr; 
 }
 
+#app-container #preview-image {
+    padding: 1rem;
+}
+
 /* Submit Button */
-#app-container #submit {
+#app-container #submit, #next{
     width: 100%;
     padding: 1rem;
     background: linear-gradient(135deg, var(--primary-accent-color), #2589b5);
@@ -186,7 +190,7 @@ body {
     transition: transform 0.1s ease, box-shadow 0.2s ease;
 }
 
-#app-container #submit:hover {
+#app-container #submit:hover, #next:hover {
     box-shadow: 0 5px 15px rgba(48, 164, 214, 0.4);
     transform: translateY(-1px);
 }

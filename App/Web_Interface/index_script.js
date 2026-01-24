@@ -4,10 +4,12 @@ const dateInput       = document.querySelector("#date");
 
 const fileDisplay   = document.querySelector("#chosen-files");
 const pdfInput      = document.querySelector("#pdf-input");
+const previewImg    = document.querySelector("#preview-image");
 const uploadBtn     = document.querySelector("#submit");
 const mainStatusDiv = document.querySelector(".status");
 const mainStatus    = document.querySelector("#status-text");
 const loading       = document.querySelector(".loading");
+const nextBtn       = document.querySelector("#next");
 
 $(function () {
     $("#date").hijriDatePicker({
@@ -76,13 +78,25 @@ uploadBtn.addEventListener("click", async () => {
     formData.append("date", dateInput.value);
 
     for (let i = 0; i < pdfInput.files.length; ++i) {
+        const file = pdfInput.files[i];
+        if(file.size === 0){
+            displayStatus("File is empty");
+            return;
+        }
+
+        // if the file size is larger than 10 MBs
+        if (file.size > 10 * 1024 * 1024){
+            displayStatus("File is too big");
+            return;
+        }
+        
         formData.append("file", pdfInput.files[i]);
     }
 
     loading.hidden = false;
     
     try { 
-        const aiResponse = await fetch("http://localhost:8000/api/scan", {
+        const aiResponse = await fetch("/api/scan", {
             method: "POST",
             body: formData,
         });
@@ -92,18 +106,23 @@ uploadBtn.addEventListener("click", async () => {
         const apiJson = await aiResponse.json();
 
         if (!apiJson.isValid) {
-            loading.hidden = true;
             displayStatus(apiJson.reason);
             return;
         }
-        
-        loading.hidden = true;
+        // ========== If the file is valid ==========
         displayStatus(apiJson.reason, true);
+        previewImg.src = window.location.origin + "\\" + apiJson.thumbnailPath;
+        nextBtn.hidden = false;
 
     } catch (e) {
-        loading.hidden = true;
         console.error("[API ERROR]: ", e);
         displayStatus("Internal server error");
         return;
+    } finally {
+        loading.hidden = true;
     }
+});
+
+nextBtn.addEventListener("click", () => {
+    window.location.href = "/U_R_F";
 });

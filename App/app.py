@@ -40,8 +40,15 @@ app.add_middleware(
 # BASE_DIR, because you need to use an absolute path when mounting
 BASE_DIR = Path(__file__).resolve().parent
 app.mount(
-    "/Web_Interface/",
+    "/Web_Interface",
     StaticFiles(directory= BASE_DIR / "Web_Interface", html=True)
+)
+
+# Mount the thumbnails directory for preview displaying
+app.mount(
+    "/" + UPLOAD_DIR,
+    StaticFiles(directory=BASE_DIR.parent / UPLOAD_DIR),
+    name=UPLOAD_DIR
 )
 
 # --- LOAD EASYOCR MODEL ---
@@ -268,6 +275,7 @@ async def scan_document(file: UploadFile = File(...)) -> ScanResponse:
         # 7. FINAL DECISION LOGIC
         reason = ""
         saved_path = None
+        thumb_path = None
         
         # Gate 1: Confidence Check
         # If the AI confidence is too low, we reject the document
@@ -297,7 +305,8 @@ async def scan_document(file: UploadFile = File(...)) -> ScanResponse:
             "caseYear": detected_year,
             "reason": reason,
             "debugScore": avg_confidence,
-            "savePath": saved_path
+            "savePath": saved_path,
+            "thumbnailPath": thumb_path
         }
 
     except Exception as e:

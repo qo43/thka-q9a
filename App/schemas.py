@@ -17,3 +17,4 @@ class ScanResponse(BaseModel):
     reason: str
     debugScore: float
     savePath: str
+    thumbnailPath: str
