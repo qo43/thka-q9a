@@ -15,6 +15,10 @@
     box-sizing: border-box;
 }
 
+html { /* Needed to override bootstrap's CSS pollution*/
+  font-size: 16px;
+}
+
 body {
     background-color: var(--bg-color);
     background-image: radial-gradient(#1e293b 1px, transparent 1px);
@@ -25,21 +29,23 @@ body {
     padding: 0;
     direction: rtl;
     min-height: 100vh;
+    font-size: 1rem;
+    line-height: 1.5;
 }
 
-.app-container {
+#app-container {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
 }
 
 /* Header */
-header {
+#app-container header {
     padding: 2rem 1rem;
     text-align: center;
 }
 
-header h1 {
+#app-container header h1 {
     margin: 0;
     font-size: 2rem;
     background: linear-gradient(90deg, var(--primary-accent-color), var(--secondary-accent-color));
@@ -48,13 +54,13 @@ header h1 {
     font-weight: 800;
 }
 
-.subtitle {
+#app-container .subtitle {
     color: var(--secondary-text-color);
     margin-top: 0.5rem;
 }
 
 /* Main Layout */
-main {
+#app-container main {
     flex: 1;
     display: flex;
     justify-content: center;
@@ -62,7 +68,7 @@ main {
     padding: 0 20px;
 }
 
-.card {
+#app-container .card {
     background: var(--card-bg-color);
     backdrop-filter: blur(10px);
     border: 1px solid var(--border-color);
@@ -74,19 +80,20 @@ main {
 }
 
 /* Inputs */
-.input-group {
+#app-container .input-group {
+    display: block; /* To override bootstrap*/
     margin-bottom: 1.25rem;
 }
 
-label {
+#app-container label {
     display: block;
     margin-bottom: 0.5rem;
     font-weight: 600;
     color: var(--primary-text-color);
 }
 
-input[type="text"], 
-input[type="date"] {
+#app-container input[type="text"], 
+#app-container input[type="date"] {
     width: 100%;
     padding: 0.85rem;
     font-size: 1rem;
@@ -95,23 +102,23 @@ input[type="date"] {
     border: 1px solid var(--border-color);
     border-radius: 8px;
     font-family: inherit;
+    width: 100%;
     transition: 0.2s ease;
     outline: none;
 }
 
-input[type="text"]:focus,
-input[type="date"]:focus {
+#app-container input[type="text"]:focus,
+#app-container input[type="date"]:focus {
     border-color: var(--primary-accent-color);
     box-shadow: 0 0 0 3px rgba(48, 164, 214, 0.2);
 }
 
 /* File Upload Visuals */
-.file-upload-wrapper {
+#app-container .file-upload-wrapper {
     margin-bottom: 2rem;
 }
 
-/* This label acts as the button for the hidden input */
-.file-upload-zone {
+#app-container .file-upload-zone {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -124,40 +131,38 @@ input[type="date"]:focus {
     transition: all 0.2s ease;
 }
 
-.file-upload-zone:hover {
+#app-container .file-upload-zone:hover {
     border-color: var(--primary-accent-color);
     background: rgba(48, 164, 214, 0.05);
 }
 
-/* Hide the ugly default file input, but keep it in DOM for JS */
-#pdf-input {
+#app-container #pdf-input {
     display: none; 
 }
 
-.upload-content {
+#app-container .upload-content {
     text-align: center;
 }
 
-.upload-content .icon {
+#app-container .upload-content .icon {
     font-size: 2rem;
     display: block;
     margin-bottom: 0.5rem;
 }
 
-.upload-content .text {
+#app-container .upload-content .text {
     font-weight: 700;
     color: var(--primary-accent-color);
 }
 
-.upload-content .sub-text {
+#app-container .upload-content .sub-text {
     display: block;
     font-size: 0.8rem;
     color: var(--secondary-text-color);
     margin-top: 0.25rem;
 }
 
-/* JS updates this text */
-#chosen-files {
+#app-container #chosen-files {
     margin-top: 0.75rem;
     font-size: 0.85rem;
     color: var(--secondary-accent-color);
@@ -167,7 +172,7 @@ input[type="date"]:focus {
 }
 
 /* Submit Button */
-#submit {
+#app-container #submit {
     width: 100%;
     padding: 1rem;
     background: linear-gradient(135deg, var(--primary-accent-color), #2589b5);
@@ -181,24 +186,23 @@ input[type="date"]:focus {
     transition: transform 0.1s ease, box-shadow 0.2s ease;
 }
 
-#submit:hover {
+#app-container #submit:hover {
     box-shadow: 0 5px 15px rgba(48, 164, 214, 0.4);
     transform: translateY(-1px);
 }
 
-#submit:active {
+#app-container #submit:active {
     transform: translateY(0);
 }
 
 /* Status & Loading */
-.loading-container {
+#app-container .loading-container {
     display: flex;
     justify-content: center;
     margin-top: 1rem;
 }
 
-/* The JS looks for .loading and toggles the [hidden] attribute */
-.loading {
+#app-container .loading {
     width: 30px;
     height: 30px;
     border: 3px solid var(--secondary-bg-color);
@@ -211,7 +215,7 @@ input[type="date"]:focus {
     to { transform: rotate(360deg); }
 }
 
-.status {
+#app-container .status {
     margin-top: 1rem;
     text-align: center;
     font-weight: 600;
@@ -219,16 +223,15 @@ input[type="date"]:focus {
     font-size: 0.95rem;
 }
 
-/* JS toggles these classes on the .status div */
-.status.error {
+#app-container .status.error {
     color: var(--warning-accent-color);
 }
 
-.status.success {
+#app-container .status.success {
     color: var(--secondary-accent-color);
 }
 
-footer {
+#app-container footer {
     text-align: center;
     padding: 1.5rem;
     color: var(--border-color);
