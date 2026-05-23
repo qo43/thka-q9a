@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" role="img" aria-labelledby="title desc">
+  <title id="title">Wathiq logo</title>
+  <desc id="desc">An icon-only legal document shield logo for Wathiq.</desc>
+  <defs>
+    <linearGradient id="shieldGradient" x1="58" y1="22" x2="176" y2="214" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#1f7ae0"/>
+      <stop offset="1" stop-color="#155a66"/>
+    </linearGradient>
+    <linearGradient id="paperGradient" x1="82" y1="62" x2="162" y2="180" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#eef6ff"/>
+    </linearGradient>
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="12" stdDeviation="12" flood-color="#102840" flood-opacity=".18"/>
+    </filter>
+  </defs>
+
+  <rect width="240" height="240" rx="52" fill="#f7fbff"/>
+  <g filter="url(#softShadow)">
+    <path fill="url(#shieldGradient)" d="M120 20 45 47v60c0 51 30 91 75 113 45-22 75-62 75-113V47L120 20Z"/>
+    <path fill="url(#paperGradient)" d="M82 61h60l28 28v82H82V61Z"/>
+    <path fill="#d8eafe" d="M142 61v28h28L142 61Z"/>
+    <path fill="#155a66" d="M100 107h43v10h-43v-10Zm0 25h35v10h-35v-10Z"/>
+    <path fill="none" stroke="#2fbf90" stroke-linecap="round" stroke-linejoin="round" stroke-width="13" d="m91 157 21 21 51-59"/>
+  </g>
+</svg>

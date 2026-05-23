@@ -5,3 +5,4 @@ venv/
 temp_*
 img/
 accepted_documents/
+logs/*.log

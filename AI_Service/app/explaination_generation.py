@@ -219,7 +219,7 @@ def _extract_legal_text(raw_output: str) -> str:
                 for key in ['explanation', 'text', 'message', 'content', 'legal_text']:
                     if key in obj and isinstance(obj[key], str):
                         return obj[key].strip()
-    except:
+    except (json.JSONDecodeError, AttributeError, TypeError):
         pass
     
     # If no JSON or extraction failed, use the raw text
