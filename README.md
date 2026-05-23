@@ -1,44 +1,63 @@
 # Wathiq | واثق
 
 <p align="center">
-  <img src="App/Web_Interface/assets/logo.svg" alt="Wathiq logo" width="130">
+  <img src="App/Web_Interface/assets/logo.svg" alt="Wathiq logo" width="110">
 </p>
 
-Wathiq is a legal document review assistant with an Arabic and English interface.
+<p align="center">
+  <strong>AI-powered legal document review for Arabic and English files.</strong>
+</p>
 
-The project helps users upload a legal PDF or image, then it reviews the writing and shows:
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3.10+-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python">
+  <img src="https://img.shields.io/badge/FastAPI-Backend-009688?style=flat-square&logo=fastapi&logoColor=white" alt="FastAPI">
+  <img src="https://img.shields.io/badge/Ollama-AI-111827?style=flat-square" alt="Ollama">
+  <img src="https://img.shields.io/badge/Arabic%20%2B%20English-Supported-2563eb?style=flat-square" alt="Arabic and English">
+</p>
 
-- what is weak or unclear
-- where the problem appears
-- how to improve the wording
-- a cleaner suggested legal draft
+## ✨ Overview
 
-## Preview
+Wathiq helps users upload legal PDFs or images, extract text, detect weak legal writing, and generate clearer suggested wording.
 
-English document review:
+The app supports Arabic and English documents with a simple bilingual interface.
 
-![Wathiq English Review - Upload](docs/images/english-review-1.png)
+## 🚀 Features
 
-![Wathiq English Review - Results](docs/images/english-review-2.png)
+- Upload legal PDFs or images
+- Extract text using PDF parsing and OCR
+- Detect unclear parties, facts, requests, and informal wording
+- Suggest stronger legal phrasing
+- Arabic and English UI
 
-## What Wathiq Checks
+## 🧠 AI Workflow
 
-Wathiq focuses on legal writing quality. It can detect problems like unclear party details, missing facts, weak requests, informal wording, and poor document organization.
+1. The document text is extracted from PDF/OCR.
+2. The text is classified and reviewed.
+3. Ollama generates a stronger legal draft when available.
+4. If AI is offline, Wathiq falls back to rule-based review.
 
-It supports Arabic and English documents, and the web interface can switch between Arabic and English for easier use.
+## 🛠 Tech Stack
 
-## Run The Project
+Python, FastAPI, EasyOCR, PyMuPDF, OpenCV, Ollama, HTML, CSS, JavaScript
 
-Open PowerShell in the project folder:
+## ⚙️ Installation
 
-```powershell
-cd D:\guedr\Desktop\Adam\Projects\Hackathon_Project\thka-q9a
+```bash
+git clone https://github.com/qo43/thka-q9a.git
+cd thka-q9a
+pip install -r requirements.txt
 ```
 
-Start the server:
+Optional AI model:
 
-```powershell
-.\.venv\Scripts\python.exe main.py
+```bash
+ollama pull qwen2.5:7b-instruct
+```
+
+## ▶️ Usage
+
+```bash
+python main.py
 ```
 
 Open:
@@ -47,46 +66,28 @@ Open:
 http://127.0.0.1:8000/Web_Interface/
 ```
 
-## Use The App
+To change the AI model, edit `OLLAMA_MODEL` in `App/app.py`.
 
-1. Enter the applicant name.
-2. Enter the national ID.
-3. Upload a legal PDF or image.
-4. Click `Analyze document` or `تحليل المستند`.
-5. Read the review report and suggested rewrite.
+## 📸 Demo
 
-## AI Model
+<p align="center">
+  <img src="docs/images/english-review-1.png" alt="Wathiq upload screen" width="45%">
+  <img src="docs/images/english-review-2.png" alt="Wathiq review results" width="45%">
+</p>
 
-The project can use Ollama for stronger review and rewriting:
+## 🔮 Future Improvements
 
-```powershell
-ollama pull qwen2.5:7b-instruct
-```
+- Add user accounts and saved review history
+- Export improved drafts as PDF or DOCX
+- Add more legal categories and validation rules
+- Improve OCR accuracy for low-quality scans
 
-If Ollama is not running, Wathiq still returns a basic review using fallback checks.
+## 👤 Author
 
-Developers can change the model in the code by editing this line in `App/app.py`:
+**Adem Guedri**<br>
+GitHub: [@AdemCE-eng](https://github.com/AdemCE-eng)<br>
+Email: [guedriadem@gmail.com](mailto:guedriadem@gmail.com)
 
-```python
-OLLAMA_MODEL = "qwen2.5:7b-instruct"
-```
+---
 
-Use the exact name of an installed Ollama model, for example `qwen2.5:7b-instruct` or `llama3.1:8b`.
-
-## Logs
-
-Runtime logs are written to:
-
-```text
-logs/wathiq.log
-```
-
-The log includes request IDs, selected model, file processing status, OCR confidence, and errors.
-
-## Tech
-
-FastAPI, EasyOCR, PyMuPDF, OpenCV, Ollama, HTML, CSS, and JavaScript.
-
-## Note
-
-Wathiq is a prototype. Any generated legal draft should be reviewed by a legal professional before real use.
+Wathiq is a prototype. Generated legal drafts should be reviewed by a legal professional before real use.
