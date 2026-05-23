@@ -9,9 +9,8 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Python-3.10+-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python">
-  <img src="https://img.shields.io/badge/FastAPI-Backend-009688?style=flat-square&logo=fastapi&logoColor=white" alt="FastAPI">
-  <img src="https://img.shields.io/badge/Ollama-AI-111827?style=flat-square" alt="Ollama">
+  <img src="https://img.shields.io/badge/License-MIT-green?style=flat-square" alt="MIT License">
+  <img src="https://img.shields.io/badge/AI-Legal%20Review-111827?style=flat-square" alt="AI Legal Review">
   <img src="https://img.shields.io/badge/Arabic%20%2B%20English-Supported-2563eb?style=flat-square" alt="Arabic and English">
 </p>
 
@@ -19,7 +18,7 @@
 
 Wathiq helps users upload legal PDFs or images, extract text, detect weak legal writing, and generate clearer suggested wording.
 
-The app supports Arabic and English documents with a simple bilingual interface.
+The interface supports Arabic and English for a smoother review experience.
 
 ## 🚀 Features
 
@@ -27,18 +26,14 @@ The app supports Arabic and English documents with a simple bilingual interface.
 - Extract text using PDF parsing and OCR
 - Detect unclear parties, facts, requests, and informal wording
 - Suggest stronger legal phrasing
-- Arabic and English UI
+- Review Arabic and English documents
 
 ## 🧠 AI Workflow
 
-1. The document text is extracted from PDF/OCR.
-2. The text is classified and reviewed.
-3. Ollama generates a stronger legal draft when available.
-4. If AI is offline, Wathiq falls back to rule-based review.
-
-## 🛠 Tech Stack
-
-Python, FastAPI, EasyOCR, PyMuPDF, OpenCV, Ollama, HTML, CSS, JavaScript
+1. Extract text from the uploaded file.
+2. Review and classify the legal content.
+3. Generate a stronger draft with Ollama when available.
+4. Use rule-based review if AI is offline.
 
 ## ⚙️ Installation
 
@@ -75,18 +70,9 @@ To change the AI model, edit `OLLAMA_MODEL` in `App/app.py`.
   <img src="docs/images/english-review-2.png" alt="Wathiq review results" width="45%">
 </p>
 
-## 🔮 Future Improvements
+## 📄 License
 
-- Add user accounts and saved review history
-- Export improved drafts as PDF or DOCX
-- Add more legal categories and validation rules
-- Improve OCR accuracy for low-quality scans
-
-## 👤 Author
-
-**Adem Guedri**<br>
-GitHub: [@AdemCE-eng](https://github.com/AdemCE-eng)<br>
-Email: [guedriadem@gmail.com](mailto:guedriadem@gmail.com)
+This project is licensed under the MIT License. See [LICENSE](LICENSE).
 
 ---
 
