@@ -9,8 +9,9 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/License-MIT-green?style=flat-square" alt="MIT License">
-  <img src="https://img.shields.io/badge/AI-Legal%20Review-111827?style=flat-square" alt="AI Legal Review">
+  <img src="https://img.shields.io/badge/Python-3.10+-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python">
+  <img src="https://img.shields.io/badge/FastAPI-Backend-009688?style=flat-square&logo=fastapi&logoColor=white" alt="FastAPI">
+  <img src="https://img.shields.io/badge/Ollama-AI-111827?style=flat-square" alt="Ollama">
   <img src="https://img.shields.io/badge/Arabic%20%2B%20English-Supported-2563eb?style=flat-square" alt="Arabic and English">
 </p>
 
@@ -66,8 +67,9 @@ To change the AI model, edit `OLLAMA_MODEL` in `App/app.py`.
 ## 📸 Demo
 
 <p align="center">
-  <img src="docs/images/english-review-1.png" alt="Wathiq upload screen" width="45%">
-  <img src="docs/images/english-review-2.png" alt="Wathiq review results" width="45%">
+  <img src="docs/images/english-review-1.png" alt="Wathiq upload screen" width="45%" align="top">
+  &nbsp;
+  <img src="docs/images/english-review-2.png" alt="Wathiq review results" width="45%" align="top">
 </p>
 
 ## 📄 License
