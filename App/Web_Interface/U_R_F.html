@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>Ù†ØªÙŠØ¬Ø© Ø§Ù„Ù…Ø¹Ø§Ù„Ø¬Ø©</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="U_R_F.css">
+</head>
+<body>
+
+<div class="bg-mesh-1"></div>
+<div class="bg-mesh-2"></div>
+
+<div class="app-container">
+
+    <header>
+        <div class="logo-area">
+            <h1>ðŸ“„ ØªÙ‚Ø±ÙŠØ± Ø§Ù„ØªØ¯Ù‚ÙŠÙ‚</h1>
+            <p class="subtitle">Ù†ØªÙŠØ¬Ø© Ø§Ù„ØªØ­Ù„ÙŠÙ„ Ø§Ù„Ø¢Ù„ÙŠ Ù„Ù„Ø¨ÙŠØ§Ù†Ø§Øª</p>
+        </div>
+    </header>
+
+    <main>
+
+        <div class="glass-card main-card">
+
+            <div class="card-top-bar">
+                <div class="status-badge success">
+                    <span class="pulse-dot"></span> <span>Ù…ÙƒØªÙ…Ù„ Ø¨Ù†Ø¬Ø§Ø­</span>
+                </div>
+                <div class="date-badge" id="date-display">2026-01-21</div>
+            </div>
+
+            <div class="document-viewer">
+                <div class="viewer-header">
+                    <span class="doc-title">output_text.txt</span>
+                    <button class="icon-btn" id="btn-copy" title="Ù†Ø³Ø® Ø§Ù„Ù†Øµ">ðŸ“‹</button>
+                </div>
+                <div class="viewer-body" id="ai-text-container">
+                    <div class="typing-indicator">
+                        <span></span><span></span><span></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="actions-grid">
+                <button id="btn-accept" class="btn-primary">
+                    âœ… Ø§Ø¹ØªÙ…Ø§Ø¯ Ø§Ù„Ù†ØªÙŠØ¬Ø©
+                </button>
+                <button id="btn-refine" class="btn-glass">
+                    ðŸ’¬ Ø·Ù„Ø¨ ØªØ¹Ø¯ÙŠÙ„ (AI Chat)
+                </button>
+            </div>
+        </div>
+
+        <div id="chat-section" class="glass-card chat-interface" hidden>
+
+            <div class="chat-header">
+                <div class="bot-info">
+                    <div class="bot-avatar">ðŸ¤–</div>
+                    <div>
+                        <h3>Ø§Ù„Ù…Ø³Ø§Ø¹Ø¯ Ø§Ù„Ø°ÙƒÙŠ</h3>
+                        <span class="bot-status">Ù…ØªØµÙ„ Ø§Ù„Ø¢Ù†</span>
+                    </div>
+                </div>
+                <button id="close-chat" class="icon-btn-close">âœ•</button>
+            </div>
+
+            <div class="chat-messages" id="chat-history">
+                <div class="message ai">
+                    <div class="bubble">ÙƒÙŠÙ ÙŠÙ…ÙƒÙ†Ù†ÙŠ ØªØ­Ø³ÙŠÙ† Ø§Ù„Ù†Øµ Ù„ÙƒØŸ</div>
+                </div>
+            </div>
+
+            <div class="chat-input-wrapper">
+                <textarea id="chat-input" placeholder="Ø§ÙƒØªØ¨ Ø·Ù„Ø¨Ùƒ Ù‡Ù†Ø§..." rows="1"></textarea>
+                <button id="send-msg" class="btn-send">âž¤</button>
+            </div>
+        </div>
+
+    </main>
+
+    <footer>
+        <p dir="ltr">Â© 2026 Judicial Helper System</p>
+    </footer>
+</div>
+
+<script src="results_script.js"></script>
+</body>
+</html>

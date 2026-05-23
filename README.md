@@ -1,7 +1,7 @@
 # Wathiq | واثق
 
 <p align="center">
-  <img src="Web_Interface/assets/logo.svg" alt="Wathiq logo" width="130">
+  <img src="App/Web_Interface/assets/logo.svg" alt="Wathiq logo" width="130">
 </p>
 
 Wathiq is a legal document review assistant with an Arabic and English interface.
@@ -38,7 +38,7 @@ cd D:\guedr\Desktop\Adam\Projects\Hackathon_Project\thka-q9a
 Start the server:
 
 ```powershell
-.\.venv\Scripts\python.exe -m uvicorn main:app --app-dir . --host 127.0.0.1 --port 8000 --reload
+.\.venv\Scripts\python.exe main.py
 ```
 
 Open:
@@ -65,7 +65,7 @@ ollama pull qwen2.5:7b-instruct
 
 If Ollama is not running, Wathiq still returns a basic review using fallback checks.
 
-Developers can change the model in the code by editing this line in `main.py`:
+Developers can change the model in the code by editing this line in `App/app.py`:
 
 ```python
 OLLAMA_MODEL = "qwen2.5:7b-instruct"
