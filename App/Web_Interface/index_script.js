@@ -29,7 +29,7 @@ const translations = {
         metricLanguage: "اللغة",
         metricYear: "السنة",
         metricCaseType: "نوع القضية",
-        metricConfidence: "جودة القراءة",
+        metricConfidence: "ثقة الذكاء الاصطناعي",
         issuesTitle: "الملاحظات ومواقعها",
         rewriteTitle: "أفضل صياغة مقترحة",
         extractedTitle: "النص المستخرج من المستند",
@@ -81,7 +81,7 @@ const translations = {
         metricLanguage: "Language",
         metricYear: "Year",
         metricCaseType: "Case type",
-        metricConfidence: "Text quality",
+        metricConfidence: "AI confidence",
         issuesTitle: "Issues and locations",
         rewriteTitle: "Best suggested rewrite",
         extractedTitle: "Extracted document text",
@@ -275,8 +275,8 @@ const renderReview = (apiJson, options = {}) => {
     resultLanguage.textContent = labelForLanguage(reviewLanguage);
     resultYear.textContent = apiJson.caseYear || "-";
     resultType.textContent = labelForCaseType(classification.case_type);
-    resultConfidence.textContent = Number.isFinite(Number(apiJson.debugScore))
-        ? `${Math.round(Number(apiJson.debugScore) * 100)}%`
+    resultConfidence.textContent = Number.isFinite(Number(classification.confidence))
+        ? `${Math.round(Number(classification.confidence) * 100)}%`
         : "-";
 
     issuesList.replaceChildren();
