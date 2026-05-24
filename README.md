@@ -67,9 +67,7 @@ To change the AI model, edit `OLLAMA_MODEL` in `App/app.py`.
 ## 📸 Demo
 
 <p align="center">
-  <img src="docs/images/report-summary.png" alt="Wathiq report summary" width="45%" align="top">
-  &nbsp;
-  <img src="docs/images/report-rewrite.png" alt="Wathiq suggested rewrite" width="45%" align="top">
+  <img src="docs/images/report-demo.png" alt="Wathiq report demo" width="75%">
 </p>
 
 ## 📄 License
