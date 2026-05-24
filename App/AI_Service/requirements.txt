@@ -1,5 +1,0 @@
-# AI Service Dependencies
-requests==2.31.0
-
-# PDF Processing (no external dependencies needed!)
-PyMuPDF>=1.23.0
